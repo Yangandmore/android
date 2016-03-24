@@ -87,8 +87,9 @@ import com.owncloud.android.utils.DisplayUtils;
  * It proxies the necessary calls via {@link android.support.v7.app.AppCompatDelegate} to be used
  * with AppCompat.
  */
-public class Preferences extends PreferenceActivity
-        implements AccountManagerCallback<Boolean>, ComponentsGetter {
+// TODO possible remove AccountManagerCallback and ComponentsGetter
+public class Preferences extends PreferenceActivity {
+        //implements AccountManagerCallback<Boolean>, ComponentsGetter {
     
     private static final String TAG = Preferences.class.getSimpleName();
 
@@ -103,8 +104,8 @@ public class Preferences extends PreferenceActivity
     private AppCompatDelegate mDelegate;
 
     private PreferenceCategory mAccountsPrefCategory = null;
-    private final Handler mHandler = new Handler();
-    private String mAccountName;
+    //private final Handler mHandler = new Handler();
+    //private String mAccountName;
     private boolean mShowContextMenu = false;
     private String mUploadPath;
     private PreferenceCategory mPrefInstantUploadCategory;
@@ -117,9 +118,9 @@ public class Preferences extends PreferenceActivity
     private Preference mPrefInstantVideoUploadPathWiFi;
     private String mUploadVideoPath;
 
-    protected FileDownloader.FileDownloaderBinder mDownloaderBinder = null;
-    protected FileUploader.FileUploaderBinder mUploaderBinder = null;
-    private ServiceConnection mDownloadServiceConnection, mUploadServiceConnection = null;
+    //protected FileDownloader.FileDownloaderBinder mDownloaderBinder = null;
+    //protected FileUploader.FileUploaderBinder mUploaderBinder = null;
+    //private ServiceConnection mDownloadServiceConnection, mUploadServiceConnection = null;
 
 
     @SuppressWarnings("deprecation")
@@ -143,6 +144,7 @@ public class Preferences extends PreferenceActivity
                     setContentDescription(getString(R.string.actionbar_settings));
         }
 
+        // TODO remove accounts code - DONE
         // Load the accounts category for adding the list of accounts
         mAccountsPrefCategory = (PreferenceCategory) findPreference("accounts_category");
 
@@ -156,7 +158,7 @@ public class Preferences extends PreferenceActivity
 
                 if (obj != null && obj instanceof RadioButtonPreference) {
                     mShowContextMenu = true;
-                    mAccountName = ((RadioButtonPreference) obj).getKey();
+                    //mAccountName = ((RadioButtonPreference) obj).getKey();
 
                     String[] items = {
                             getResources().getString(R.string.change_password),
@@ -178,7 +180,8 @@ public class Preferences extends PreferenceActivity
                             AccountManager am = (AccountManager) getSystemService(ACCOUNT_SERVICE);
                             Account accounts[] = am.getAccountsByType(MainApp.getAccountType());
                             for (Account a : accounts) {
-                                if (a.name.equals(mAccountName)) {
+                                //if (a.name.equals(mAccountName)) {
+                                if (a.name.equals("")) {
                                     if (position==0) {
 
                                         // Change account password
@@ -192,7 +195,8 @@ public class Preferences extends PreferenceActivity
                                     } else if (position==1) {
 
                                         // Remove account
-                                        am.removeAccount(a, Preferences.this, mHandler);
+                                        //am.removeAccount(a, Preferences.this, mHandler);
+                                        am.removeAccount(a, null, new Handler());
                                         Log_OC.d(TAG, "Remove an account " + a.name);
                                         alertDialog.cancel();
                                     }
@@ -460,7 +464,8 @@ public class Preferences extends PreferenceActivity
        loadInstantUploadPath();
        loadInstantUploadVideoPath();
 
-        /* ComponentsGetter */
+        // TODO remove after test - DONE
+        /* ComponentsGetter
         mDownloadServiceConnection = newTransferenceServiceConnection();
         if (mDownloadServiceConnection != null) {
             bindService(new Intent(this, FileDownloader.class), mDownloadServiceConnection,
@@ -471,7 +476,7 @@ public class Preferences extends PreferenceActivity
             bindService(new Intent(this, FileUploader.class), mUploadServiceConnection,
                     Context.BIND_AUTO_CREATE);
         }
-
+*/
     }
     
     private void toggleInstantPictureOptions(Boolean value){
@@ -514,6 +519,8 @@ public class Preferences extends PreferenceActivity
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
+    // TODO remove, moved to account manager - DONE
+    /*
     @Override
     public void run(AccountManagerFuture<Boolean> future) {
         if (future.isDone()) {
@@ -541,6 +548,7 @@ public class Preferences extends PreferenceActivity
             addAccountsCheckboxPreferences();
         }
     }
+    */
 
     @Override
     protected void onResume() {
@@ -694,6 +702,8 @@ public class Preferences extends PreferenceActivity
     protected void onDestroy() {
         mDbHandler.close();
 
+        // TODO remove after test - DONE
+        /*
         if (mDownloadServiceConnection != null) {
             unbindService(mDownloadServiceConnection);
             mDownloadServiceConnection = null;
@@ -702,6 +712,7 @@ public class Preferences extends PreferenceActivity
             unbindService(mUploadServiceConnection);
             mUploadServiceConnection = null;
         }
+        */
 
         super.onDestroy();
         getDelegate().onDestroy();
@@ -724,6 +735,7 @@ public class Preferences extends PreferenceActivity
         return mDelegate;
     }
 
+    // TODO remove/move after test
     /**
      * Create the list of accounts that has been added into the app
      */
@@ -809,6 +821,7 @@ public class Preferences extends PreferenceActivity
         }
     }
 
+    // TODO remove after finished -DONE
     /**
      * Create the preference for allow adding new accounts
      */
@@ -872,7 +885,9 @@ public class Preferences extends PreferenceActivity
         editor.commit();
     }
 
+    //TODO remove this implementation
     // Methods for ComponetsGetter
+    /*
     @Override
     public FileDownloader.FileDownloaderBinder getFileDownloaderBinder() {
         return mDownloaderBinder;
@@ -899,11 +914,14 @@ public class Preferences extends PreferenceActivity
         return null;
     }
 
+
     protected ServiceConnection newTransferenceServiceConnection() {
         return new PreferencesServiceConnection();
     }
+    */
 
     /** Defines callbacks for service binding, passed to bindService() */
+    /*
     private class PreferencesServiceConnection implements ServiceConnection {
 
         @Override
@@ -932,4 +950,5 @@ public class Preferences extends PreferenceActivity
             }
         }
     };
+    */
 }
